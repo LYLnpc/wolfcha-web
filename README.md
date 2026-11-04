@@ -9,10 +9,10 @@
 
 ## 🌐 在线游玩
 
-部署完成后访问：
+已部署，直接打开即可玩：
 
 ```
-https://<你的用户名>.github.io/wolfcha-web/
+https://lylnpc.github.io/wolfcha-web/
 ```
 
 打开网页 → 点「API 配置」→ 填入自己的 API Key → 开始游戏。
@@ -57,18 +57,18 @@ https://<你的用户名>.github.io/wolfcha-web/
 
 ## 🚀 部署
 
-### 方式一：GitHub Pages（本仓库已配好，自动部署）
+### 方式一：GitHub Pages（已配置好，开箱即用）
 
-仓库内已包含 `.github/workflows/deploy-pages.yml`。首次启用：
+**已经部署完成，直接访问：**
 
-1. 打开仓库 **Settings → Pages**
-2. **Source** 选 **GitHub Actions**
-3. 到 **Actions** 标签页，等 `Deploy to GitHub Pages` 跑完（约 2-3 分钟）
-4. 访问 `https://<你的用户名>.github.io/wolfcha-web/`
+```
+https://lylnpc.github.io/wolfcha-web/
+```
 
-之后每次 `git push` 到 `main` 都会自动重新部署。
+仓库内已包含 `.github/workflows/deploy-pages.yml`：每次 `git push` 到 `main`，会自动构建静态文件并发布到 `gh-pages` 分支，Pages 从该分支托管（约 2-3 分钟生效）。
 
-> 如果改了仓库名，需要同步改工作流里的 `BASH_PREFIX`（默认自动取仓库名，一般不用动）。
+> 想换成自己的账号：fork 本仓库 → Settings → Pages → Source 选 `gh-pages` 分支 → Actions 里手动跑一次 workflow。
+> 改了仓库名的话，工作流里的 `BASH_PREFIX` 会自动取新仓库名，无需手动改。
 
 ### 方式二：Vercel（体验更好）
 
