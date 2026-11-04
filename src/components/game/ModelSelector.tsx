@@ -68,6 +68,12 @@ export function ModelSelector({
 
   const modelsUrl = resolveModelsUrl(providerId, baseUrl);
 
+  // 用 ref 读取当前值，避免 loadModels 因 value 变化而重建（否则每敲一个字都会换函数）
+  const valueRef = useRef(value);
+  useEffect(() => {
+    valueRef.current = value;
+  }, [value]);
+
   const loadModels = useCallback(
     async (options?: { silent?: boolean }) => {
       if (!modelsUrl) {
@@ -91,9 +97,10 @@ export function ModelSelector({
         writeCache(providerId, result.models);
         setOpen(true);
 
-        // 当前模型不在列表中时，自动选中第一个，避免用户拿到无效模型名
-        if (!value || !result.models.includes(value)) {
-          onChange(value && result.models.includes(value) ? value : result.models[0]);
+        // 当前模型不在列表中时自动选中第一个，避免用户手上是个无效模型名
+        const current = valueRef.current;
+        if (!current || !result.models.includes(current)) {
+          onChange(result.models[0]);
         }
       } catch (err) {
         if ((err as Error)?.name === "AbortError") return;
@@ -103,7 +110,7 @@ export function ModelSelector({
         setLoading(false);
       }
     },
-    [apiKey, baseUrl, modelsUrl, onChange, providerId, value]
+    [apiKey, baseUrl, modelsUrl, onChange, providerId]
   );
 
   // 切换服务商时切换到对应缓存
