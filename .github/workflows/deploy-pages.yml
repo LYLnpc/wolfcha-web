@@ -31,11 +31,12 @@ jobs:
           node-version: 22
           cache: pnpm
 
-      # 必须用 pnpm-lock.yaml：它记录了全平台原生二进制。
-      # package-lock.json 在 Windows 生成，只含 win32 包，Linux runner 上
+      # 必须用 pnpm：pnpm-lock.yaml 记录了全平台原生二进制，
+      # 而 Windows 生成的 package-lock.json 只含 win32 包，Linux runner 上
       # 会缺 lightningcss.linux-x64-gnu.node 导致 CSS 编译失败。
+      # 上游 lock 与 package.json 的 specifiers 不一致，因此不能用 --frozen-lockfile。
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --no-frozen-lockfile
 
       - name: Build static export
         env:
