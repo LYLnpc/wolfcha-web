@@ -1,0 +1,7 @@
+1:"$Sreact.fragment"
+2:I[773,["773","static/chunks/773-b8fe3aaac3651fa8.js","177","static/chunks/app/layout-f394d97b45f6f50b.js"],"Toaster"]
+3:I[3040,[],""]
+4:I[2038,[],""]
+:HL["/wolfcha-web/_next/static/css/1ed742e24567be6c.css","style"]
+:HL["https://fonts.loli.net/css2?family=Cinzel:wght@700&family=Noto+Serif+SC:wght@400;700&family=IM+Fell+English:ital@0;1&display=swap","style"]
+0:{"buildId":"owNX1ZTPUoSmXS7YtJMhk","rsc":["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/wolfcha-web/_next/static/css/1ed742e24567be6c.css","precedence":"next"}]],["$","html",null,{"lang":"zh-CN","children":[["$","head",null,{"children":[["$","link",null,{"rel":"preconnect","href":"https://fonts.loli.net","crossOrigin":"anonymous"}],["$","link",null,{"href":"https://fonts.loli.net/css2?family=Cinzel:wght@700&family=Noto+Serif+SC:wght@400;700&family=IM+Fell+English:ital@0;1&display=swap","rel":"stylesheet"}]]}],["$","body",null,{"className":"antialiased","children":[["$","$L2",null,{"position":"top-center","closeButton":true}],["$","$L3",null,{"parallelRouterKey":"children","template":["$","$L4",null,{}]}]]}]]}]]}],"loading":null,"isPartial":false}
