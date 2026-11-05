@@ -12,8 +12,9 @@ export interface ApiProvider {
   applyUrl: string;
 }
 
-// 预设模型列表
+// 预设模型列表；auto 由支持智能路由的服务商自动挑选模型（如小力孩AI）
 export const MODEL_PRESETS = [
+  'auto',
   'deepseek-v3.2',
   'gemini-3-flash-preview',
   'gemini-3-pro',

@@ -1,11 +1,12 @@
 /**
- * 自动获取 OpenAI 兼容接口的可用模型列表。
+ * 自动获取 OpenAI 兼容接口的可用模型列表（纯静态站点版）。
  *
  * 策略（按优先级）：
- *  1. 浏览器直连 GET /models —— API Key 只发给服务商，不经过本站服务器；
- *  2. 直连失败（多为 CORS / 网络策略）时回退到本站 /api/models 服务端代理；
- *  3. 仍失败则回退内置预设 MODEL_PRESETS，并保留手动输入。
+ *  1. 浏览器直连 GET /models —— API Key 只发给服务商，不经过任何服务器；
+ *  2. 失败（多为 CORS / 鉴权 / 路径差异）时回退内置预设 MODEL_PRESETS；
+ *  3. 始终保留手动输入，预设首项 auto 由支持智能路由的服务商自动挑模型。
  *
+ * 本仓库部署在 GitHub Pages 上，是纯静态站点，没有服务端代理。
  * 成功结果写入 localStorage，24 小时内可直接复用。
  */
 
@@ -17,7 +18,7 @@ const REQUEST_TIMEOUT_MS = 8000;
 
 type CacheMap = Record<string, { models: string[]; fetchedAt: number }>;
 
-export type ModelSource = "live" | "proxy" | "cache" | "preset";
+export type ModelSource = "live" | "cache" | "preset";
 
 export interface FetchModelsResult {
   models: string[];
@@ -119,7 +120,7 @@ export async function fetchAvailableModels(options: FetchModelsOptions): Promise
     }
   }
 
-  // 1) 浏览器直连（Key 不经本站服务器）
+  // 浏览器直连（Key 不经任何服务器，纯静态站点唯一可行的路径）
   let lastError = "未知错误";
   for (const endpoint of endpoints) {
     try {
@@ -149,31 +150,7 @@ export async function fetchAvailableModels(options: FetchModelsOptions): Promise
     }
   }
 
-  // 2) 服务端代理兜底（解决浏览器 CORS 限制）
-  try {
-    const res = await fetch("/api/models", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ endpoints, apiKey }),
-      signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS * 2),
-    });
-    if (res.ok) {
-      const data: unknown = await res.json();
-      const obj = (data ?? {}) as { models?: unknown; endpoint?: unknown };
-      const models = normalizeModels(obj.models);
-      if (models.length) {
-        writeCache(baseUrl, models);
-        return {
-          models,
-          source: "proxy",
-          endpoint: typeof obj.endpoint === "string" ? obj.endpoint : undefined,
-          message: `经本站代理获取到 ${models.length} 个模型`,
-        };
-      }
-    }
-  } catch {
-    // 继续回退到内置预设
-  }
-
-  return presetResult(`自动获取失败（${lastError}），已回退内置模型，可手动输入`);
+  return presetResult(
+    `自动获取失败（${lastError}）；若服务商禁止跨域，可直接选 auto 或在「自定义」里手填模型名`,
+  );
 }

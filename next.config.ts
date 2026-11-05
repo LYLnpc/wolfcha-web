@@ -6,12 +6,21 @@ const pkg = JSON.parse(
   readFileSync(new URL("./package.json", import.meta.url), "utf-8")
 ) as { version?: string };
 
-// Vercel 使用自带的 Next.js 构建管线；standalone 仅用于自托管 / Docker。
-const isVercel = Boolean(process.env.VERCEL);
+// GitHub Pages 部署在 /<仓库名> 子路径下；CI 通过 PAGES_BASE_PATH 注入。
+// 本地开发不设置该变量，站点仍从根路径访问。
+// 注意：Windows Git Bash 会把 /xxx 自动转换成盘符路径，校验不通过时忽略该值，
+// 避免非法 basePath 让本地构建直接失败。
+const rawBasePath = process.env.PAGES_BASE_PATH || "";
+const pagesBasePath = /^\/[A-Za-z0-9._~-]+(?:\/[A-Za-z0-9._~-]+)*$/.test(rawBasePath)
+  ? rawBasePath
+  : "";
 
 const nextConfig: NextConfig = {
-  ...(isVercel ? {} : { output: "standalone" as const }),
-  /* config options here */
+  // 纯静态导出，产物为 out/，由 GitHub Actions 推到 gh-pages 分支
+  output: "export",
+  ...(pagesBasePath ? { basePath: pagesBasePath } : {}),
+  // 静态站点没有 Next.js 图片优化服务
+  images: { unoptimized: true },
   reactCompiler: true,
   env: {
     NEXT_PUBLIC_APP_VERSION: pkg.version ?? "0.0.0",

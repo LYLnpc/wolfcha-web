@@ -18,7 +18,6 @@ const CUSTOM_VALUE = "__custom__";
 
 const SOURCE_LABEL: Record<ModelSource, string> = {
   live: "直连获取",
-  proxy: "代理获取",
   cache: "本地缓存",
   preset: "内置预设",
 };
@@ -272,9 +271,9 @@ export function ApiConfigModal({ open, onOpenChange }: ApiConfigModalProps) {
                   />
                 )}
 
-                {modelSource === 'proxy' && (
+                {modelSource === 'preset' && modelStatus.includes('失败') && (
                   <p className="text-[10px] text-amber-600 mt-2 leading-relaxed">
-                    浏览器直连被拦截，已通过本站服务端代理获取。此请求中 API Key 会经过部署服务器；介意的话可改用允许跨域的服务商，或直接手动输入模型名。
+                    纯静态站点只能由浏览器直连服务商。若对方禁止跨域，可直接选 auto（智能路由）或在「自定义」里手填模型名，游戏不受影响。
                   </p>
                 )}
               </div>
