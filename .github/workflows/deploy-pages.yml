@@ -15,22 +15,33 @@ concurrency:
 jobs:
   build-and-publish:
     runs-on: ubuntu-latest
+    env:
+      # package.json 的 packageManager 声明的是 yarn，关闭 pnpm 的严格版本校验
+      COREPACK_ENABLE_STRICT: "0"
+      npm_config_manage_package_manager_versions: "false"
     steps:
       - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
 
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
+          cache: pnpm
 
+      # 必须用 pnpm-lock.yaml：它记录了全平台原生二进制。
+      # package-lock.json 在 Windows 生成，只含 win32 包，Linux runner 上
+      # 会缺 lightningcss.linux-x64-gnu.node 导致 CSS 编译失败。
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Build static export
         env:
           # 仓库名即 Pages 子路径；改仓库名时这里会自动跟着变
           PAGES_BASE_PATH: /${{ github.event.repository.name }}
-        run: npm run build
+        run: pnpm run build
 
       - name: Disable Jekyll
         run: touch out/.nojekyll

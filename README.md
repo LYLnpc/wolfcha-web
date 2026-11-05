@@ -31,8 +31,8 @@
 
 `.github/workflows/deploy-pages.yml` 会在 **push 到 `main` 时自动执行**：
 
-1. `npm ci` 安装依赖；
-2. 注入 `PAGES_BASE_PATH=/wolfcha-web` 后执行 `npm run build`，产出静态目录 `out/`；
+1. `pnpm install --frozen-lockfile` 安装依赖。**必须用 pnpm**：仓库的 `pnpm-lock.yaml` 记录了全平台原生二进制；`package-lock.json` 是在 Windows 上生成的，只含 win32 包，Linux runner 上会缺 `lightningcss.linux-x64-gnu.node`，导致 Tailwind CSS 编译失败。
+2. 注入 `PAGES_BASE_PATH=/wolfcha-web` 后执行 `pnpm run build`，产出静态目录 `out/`；
 3. 写入 `out/.nojekyll`（否则 GitHub Pages 的 Jekyll 会忽略 `_next` 目录）；
 4. 用 `peaceiris/actions-gh-pages` 把 `out/` 推到 `gh-pages` 分支。
 
